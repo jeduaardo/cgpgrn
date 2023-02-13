@@ -308,14 +308,14 @@ def noClustering(splineFile, splineFileName, allGenes, PROBLEM_NAME, CURRENT_PT,
     print("No clustering method chosen.")
     Log.register('message', 'No clustering method chosen.')
 
-    currentFileName = dirName + '\geneNames_' + PROBLEM_NAME + "_" + CURRENT_PT + ".txt"
+    currentFileName = os.path.join(dirName, 'geneNames_' + PROBLEM_NAME + "_" + CURRENT_PT + ".txt")
     outputFile = open(currentFileName, 'w')
     for gene in allGenes:
         outputFile.write(gene)
         outputFile.write("\n")
     outputFile.close()
         
-    CSV_FileName = dirName + '\spline_' + PROBLEM_NAME + "_" + CURRENT_PT + '.csv'
+    CSV_FileName = os.path.join(dirName, 'spline_' + PROBLEM_NAME + "_" + CURRENT_PT + '.csv')
     for chunk in pd.read_csv(splineFileName, chunksize=chunksize, index_col=0):
         allTimePoints = chunk.columns
         #print(allTimePoints)
