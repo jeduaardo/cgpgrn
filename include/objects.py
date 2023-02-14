@@ -166,7 +166,8 @@ class CGPGRN:
                 readSplineData = pd.read_csv(splineDataName, index_col=0)
                 allGenes = readSplineData.T.columns
 
-                currentFile = currentDir + "spline_" + self.arguments.problemName + "_" + currentPseudoTime + ".txt"
+                currentFile = currentDir + "spline_" + self.arguments.problemName + "_" + currentPseudoTime + ".csv"
+                currentGenesNamesFiles = currentDir + "genesNames_" + self.arguments.problemName + "_" + currentPseudoTime + ".txt"
                 genesNamesFiles.append(currentGenesNamesFiles)
                 directories.append(currentDir)
                 currentOutFile = currentDir + Utils.dict_discretizationPrefixes[self.arguments.discretizationApproach] + self.arguments.problemName + "_" + currentPseudoTime + ".csv"
@@ -229,7 +230,8 @@ class CGPGRN:
                 readSplineData = pd.read_csv(splineDataName, index_col=0)
                 allGenes = readSplineData.T.columns
 
-                currentFile = currentDir + "spline_" + self.arguments.problemName + "_" + currentPseudoTime + ".txt"
+                currentFile = currentDir + "spline_" + self.arguments.problemName + "_" + currentPseudoTime + ".csv"
+                currentGenesNamesFiles = currentDir + "geneNames_" + self.arguments.problemName + "_" + currentPseudoTime + ".txt"
                 genesNamesFiles.append(currentGenesNamesFiles)
                 directories.append(currentDir)
                 currentOutFile = currentDir + Utils.dict_discretizationPrefixes[self.arguments.discretizationApproach] + self.arguments.problemName + "_" + currentPseudoTime + ".csv"
