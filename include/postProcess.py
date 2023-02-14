@@ -376,7 +376,122 @@ def generateTimeStatistics():
 
 
 
+
+
+def generateRankedEdgesPerExecution(finalDirectory):
+
+    nRuns = allArgs['independentRuns']
+    nPTs = allArgs['pts']
+    CM = allArgs['clusterMethod']
+    EXES = allArgs['exes']
+    allExes = []
+    for i in range(int(nRuns)):
+        allExes.append("exe_" + str(i+1))
+
+
+
+    if CM in Utils.clusteringMethods:
+        foundClusters = []
+        for i in range(int(allArgs['nClusters'])):
+            currentSearch = 'Cluster' + str(i)
+            for value in allArgs['exes']:
+                if currentSearch in value:
+                    if currentSearch not in foundClusters:
+                        foundClusters.append(currentSearch)
+
+        for exe in allExes:
+            currentDirsExecution = []
+            for pt in nPTs:
+                for cluster in foundClusters:
+                    currentDirsExecution.append(exe + "_" + cluster + "_" + pt)
+            URE_fileName = 'unified_rankedEdges_' + allArgs['problemName'] + "_" + exe + ".csv"
+            #URE_file = open(URE_fileName, "w")
+            URE_file = open(finalDirectory + "/" + URE_fileName, "w")
+            for currentDir in currentDirsExecution:
+                currentFileName = "executions_parallel/" + currentDir + "/" + "rankedEdges_" + allArgs['problemName'] + ".csv"
+                if os.path.exists(currentFileName):
+                    localOpen = open(currentFileName, "r")
+                    for line in localOpen:
+                        URE_file.write(line)
+                    localOpen.close()
+            URE_file.close()
+    else:
+        for exe in allExes:
+            currentDirsExecution = []
+            for pt in nPTs:
+                currentDirsExecution.append(exe + "_" + pt)
+            URE_fileName = 'unified_rankedEdges_' + allArgs['problemName'] + "_" + exe + ".csv"
+            #URE_file = open(URE_fileName, "w")
+            URE_file = open(finalDirectory + "/" + URE_fileName, "w")
+            for currentDir in currentDirsExecution:
+                currentFileName = "executions_parallel/" + currentDir + "/" + "rankedEdges_" + allArgs['problemName'] + ".csv"
+                if os.path.exists(currentFileName):
+                    localOpen = open(currentFileName, "r")
+                    for line in localOpen:
+                        URE_file.write(line)
+                    localOpen.close()
+            URE_file.close()            
+
+
+
+
+    for exe in allExes:
+        currentURE_fileName = 'unified_rankedEdges_' + allArgs['problemName'] + "_" + exe + ".csv"
+        #currentURE_file = open(currentURE_fileName, "r")
+        currentURE_file = open(finalDirectory + "/" + currentURE_fileName, "r")
+        #if os.path.exists(currentURE_fileName):
+
+        EDGES = {}
+
+        for line in currentURE_file:
+            localEdges = []
+            splitting = line.split("\t")
+            genes = splitting[0].strip() + "\t" + splitting[1].strip()
+            regulationStrength = splitting[2].replace("\n", "")
+            regulationStrength = regulationStrength.replace("'", "")
+            regulationStrength = regulationStrength.strip()
+            if genes in EDGES.keys():
+                if float(regulationStrength) > EDGES[genes]:
+                    EDGES[genes] = float(regulationStrength)
+            else:
+                EDGES[genes] = float(regulationStrength)
+
+        URE_file.close()
+
+
+
+        uniqueValues = list(np.unique(list(EDGES.values())))
+        uniqueValues.sort(reverse=True)
+
+        FRE_fileName = 'rankedEdges_' + allArgs['problemName'] + "_" + exe + ".csv"
+
+        FRE_file = open(finalDirectory + "/" +FRE_fileName, "w")
+        #FRE_file = open(FRE_fileName, "w")
+        FRE_file.write("Gene1\tGene2\tEdgeWeight\n")
+
+        for value in uniqueValues:
+            for regulation in EDGES.keys():
+                if EDGES[regulation] == value:
+                    currentString = str(regulation) + "\t" + str(value) + "\n"
+                    FRE_file.write(currentString)
+
+        FRE_file.close()        
+
+
+        #else:
+        #    print("File not found.")
+        #    print(currentURE_fileName)
+            
+          
+
+
 generateTimeStatistics()
+
+
+
+
+
+        
 
 
 finalDirectory = "finalResults_" + allArgs['problemName']
@@ -391,6 +506,10 @@ else:
     finalDirectory = local_finalDirectory
     os.mkdir(finalDirectory)
         
+
+
+generateRankedEdgesPerExecution(finalDirectory)
+
 
 URE_fileName = 'unified_rankedEdges_' + allArgs['problemName'] + ".csv"
 
