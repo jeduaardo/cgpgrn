@@ -71,6 +71,8 @@ def generateOutputs(PROBLEM_NAME, genesNamesFile, discretizationFile, discretiza
     dictStates = {}
     del dictStates
 
+
+    print("TRANSITIONS: ")
     print(transitions)
 
 
@@ -87,6 +89,7 @@ def generateOutputs(PROBLEM_NAME, genesNamesFile, discretizationFile, discretiza
                 dictTransitions[currentState].append(transitions[transition + 1])
 
 
+    print("DICT TRANSITIONS")
     print(dictTransitions)
     print("Solving ambiguous transitions...")
 
@@ -113,14 +116,27 @@ def generateOutputs(PROBLEM_NAME, genesNamesFile, discretizationFile, discretiza
                     solvedTransition += "1"
                 else:
                     solvedTransition += "0"
-                print(bits)
+                #print(bits)
             dictFinalTransitions[transition] = solvedTransition
         else:
             dictFinalTransitions[transition] = dictTransitions[transition][0]
 
-    dictFinalTransitions[list(dictFinalTransitions.keys())[len(dictFinalTransitions.keys())-1]] = list(dictFinalTransitions.keys())[len(dictFinalTransitions.keys())-1]
 
+    print("AQUI")
+    print(len(dictFinalTransitions.keys()))
     print(dictFinalTransitions)
+    
+    #dictFinalTransitions[list(dictFinalTransitions.keys())[len(dictFinalTransitions.keys())-1]] = list(dictFinalTransitions.keys())[len(dictFinalTransitions.keys())-1]
+
+    if len(dictFinalTransitions.keys()) == 0: #TODO: SE NAO EXISTEM TRANSICOES, A TT VAI COM 0 LINHAS NESSE CASO ABAIXO
+        print("EH VAZIO")
+        dictFinalTransitions['9'] = '9'
+    else:
+        dictFinalTransitions[list(dictFinalTransitions.keys())[len(dictFinalTransitions.keys())-1]] = list(dictFinalTransitions.keys())[len(dictFinalTransitions.keys())-1]
+
+    
+
+    #print(dictFinalTransitions)
     dictTransitions = {}
     del dictTransitions
 

@@ -82,20 +82,31 @@ class ExpressionData:
                 vector_test[0].append(timePoints[element])
                 vector_test[1].append(expressionData[element])
 
-            smooth_values = [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.99]
-            for smooths in smooth_values:
-                ys = csaps(vector_train[0], vector_train[1], timePoints, smooth=smooths)
-                dif_total = 0
-                for element in range(len(vector_test[0])):
-                    calculated = ys[element]
-                    real = vector_test[1][element]
-                    dif_total += pow(real - calculated, 2)
-                if smooths not in smooth_errors.keys():
-                    smooth_errors[smooths] = dif_total
-                else:
-                    smooth_errors[smooths] += dif_total
 
-            best_smooth = list(smooth_errors.keys())[np.argmin(list(smooth_errors.values()))]
+
+            smooth_values = [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.99]
+
+            if len(vector_train[0]) > 1 and len(vector_train[1]) > 1:
+
+            
+                for smooths in smooth_values:
+                    ys = csaps(vector_train[0], vector_train[1], timePoints, smooth=smooths)
+                    dif_total = 0
+                    for element in range(len(vector_test[0])):
+                        calculated = ys[element]
+                        real = vector_test[1][element]
+                        dif_total += pow(real - calculated, 2)
+                    if smooths not in smooth_errors.keys():
+                        smooth_errors[smooths] = dif_total
+                    else:
+                        smooth_errors[smooths] += dif_total
+
+
+                best_smooth = list(smooth_errors.keys())[np.argmin(list(smooth_errors.values()))]
+
+            else:
+
+                best_smooth = 0.99
 
         return best_smooth
     
@@ -184,6 +195,9 @@ def preProcessData(pseudotimeFile, expressionDataFile, suffix):
         
         with Pool(mp.cpu_count()) as pool:
             M = pool.starmap(ExprData.processData, zip(repeat(pts), [i for i in range(len(ExprFile.T.columns))]))
+
+        #for i in range(len(ExprFile.T.columns)):
+        #    ExprData.processData(pts, i)
 
         fileName = 'splineData_' + ExprData.suffix + "_pt" + str(pts) + '.csv'
 

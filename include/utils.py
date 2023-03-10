@@ -316,7 +316,7 @@ def getNodesAndGenerations(fullTT, cgpNodes, cgpGens, currentMaxOutputs):
             if fullTT == False:
                 currentMaxGens = 50000 + math.ceil(currentMaxOutputs // 20) * 50000
             else:
-                currentMaxGens = 1000000 + math.ceil(currentMaxOutputs // 400) * 1000000
+                currentMaxGens = 1500000 + math.ceil(currentMaxOutputs // 400) * 1500000
         else:
             currentMaxGens = cgpGens
 
